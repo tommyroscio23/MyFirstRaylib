@@ -1,0 +1,36 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.VC.db
+*.VC.VC.opendb
+*.vcxproj.user
+
+# Build artifacts
+bin/
+obj/
+build/
+Debug/
+Release/
+x64/
+x86/
+*.ilk
+*.pdb
+*.obj
+*.exe
+*.dll
+*.lib
+*.a
+
+# IDE/editor
+.vscode/
+*.code-workspace
+
+# Logs and temp
+*.log
+*.tmp
+*.cache
+
+# Misc
+*.zip
+*.7z
