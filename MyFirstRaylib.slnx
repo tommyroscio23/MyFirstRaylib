@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="MyFirstRaylib/MyFirstRaylib.vcxproj" />
+  <Project Path="MyFirstRaylib/MyFirstRaylib.vcxproj" Id="45792ff6-a86f-46fc-ad73-1776fc2d8dd0" />
 </Solution>
