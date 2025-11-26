@@ -1,82 +1,106 @@
 #include "raylib.h"
 
-// Player variables
-int playerX = 350;
-int playerY = 250;
-const int playerRectangleWidth = 250;
-const int playerRectangleHeight = 100;
+struct Player {
+	int x;
+	int y;
+	const int width;
+	const int height;
+	Color color;
+};
 
-// Target variables
-int targetX = 400;
-int targetY = 100;
-const int targetSize = 40;
+struct Target {
+	int x;
+	int y;
+	const int size;
+};
 
-// Window variables
-const int windowWidth = 800;
-const int windowHeigth = 600;
-const int targetFPS = 60;
+struct Window {
+	const int width;
+	const int height;
+	const int targetFPS;
+};
 
-// -- FUNCTIONS --
+Player myPlayer = { 350, 250, 250, 100, RED };
+Target myTarget = { 400, 100, 50 };
+Window myWindow = { 800, 600, 60 };
+
+/*
+ * Updates Player position based on movement and boundaries
+ * @return void
+**/
 void UpdatePlayer() {
 	// Movement
 	if (IsKeyDown(KEY_RIGHT)) {
-		playerX += 5;
+		myPlayer.x += 5;
 	}
 	if (IsKeyDown(KEY_LEFT)) {
-		playerX -= 5;
+		myPlayer.x -= 5;
 	}
 	if (IsKeyDown(KEY_UP)) {
-		playerY -= 5;
+		myPlayer.y -= 5;
 	}
 	if (IsKeyDown(KEY_DOWN)) {
-		playerY += 5;
+		myPlayer.y += 5;
 	}
 
 	// Boundaries Check
-	if (playerX < 0) {
-		playerX = 0;
+	if (myPlayer.x < 0) {
+		myPlayer.x = 0;
 	}
 
-	if (playerX + playerRectangleWidth > windowWidth) {
-		playerX = windowWidth - playerRectangleWidth;
+	if (myPlayer.x + myPlayer.width > myWindow.width) {
+		myPlayer.x = myWindow.width - myPlayer.width;
 	}
 
-	if (playerY < 0) {
-		playerY = 0;
+	if (myPlayer.y < 0) {
+		myPlayer.y = 0;
 	}
 
-	if (playerY + playerRectangleHeight > windowHeigth) {
-		playerY = windowHeigth - playerRectangleHeight;
+	if (myPlayer.y + myPlayer.height > myWindow.height) {
+		myPlayer.y = myWindow.height - myPlayer.height;
 	}
+}
+
+/*
+ * Updates the target position on collision
+ * @return void
+**/
+void UpdateCollision() {
+
+	// Collision logic - left and top edges are X and Y
+	int playerRightEdge = myPlayer.x + myPlayer.width;
+	int playerBottomEdge = myPlayer.y + myPlayer.height;
+	int targetRightEdge = myTarget.x + myTarget.size;
+	int targetBottomEdge = myTarget.y + myTarget.size;
+
+	if (playerRightEdge > myTarget.x && myPlayer.x < targetRightEdge && playerBottomEdge > myTarget.y && myPlayer.y < targetBottomEdge) {
+		myTarget.x = GetRandomValue(0, myWindow.width - myTarget.size);
+		myTarget.y = GetRandomValue(0, myWindow.height - myTarget.size);
+	}
+}
+
+/*
+ * Draws objects like Player and Target Rectangles 
+ * @return void
+**/
+void DrawGame() {
+	BeginDrawing();
+	ClearBackground(RAYWHITE);
+	DrawRectangle(myPlayer.x, myPlayer.y, myPlayer.width, myPlayer.height, RED);
+	DrawRectangle(myTarget.x, myTarget.y, myTarget.size, myTarget.size, GREEN);
+	EndDrawing();
 }
 
 int main()
 {	
-	InitWindow(windowWidth, windowHeigth, "Success");
-	SetTargetFPS(targetFPS);
+	InitWindow(myWindow.width, myWindow.height, "Success");
+	SetTargetFPS(myWindow.targetFPS);
 
 	while (!WindowShouldClose())
 	{	
 		UpdatePlayer();
-		
-		// Collision logic - left and top edges are X and Y
-		int playerRightEdge = playerX + playerRectangleWidth;
-		int playerBottomEdge = playerY + playerRectangleHeight;
-		int targetRightEdge = targetX + targetSize;
-		int targetBottomEdge = targetY + targetSize;
-
-		if (playerRightEdge > targetX && playerX < targetRightEdge && playerBottomEdge > targetY && playerY < targetBottomEdge) {
-			targetX = GetRandomValue(0, windowWidth - targetSize);
-			targetY = GetRandomValue(0, windowHeigth - targetSize);
-		}
-
-
-		// Drawing Logic
-		BeginDrawing();
-		ClearBackground(RAYWHITE);
-		DrawRectangle(playerX, playerY, playerRectangleWidth, playerRectangleHeight, RED);
-		DrawRectangle(targetX, targetY, targetSize, targetSize, GREEN);
-		EndDrawing();
+		UpdateCollision();
+		DrawGame();
 	}
 
 	CloseWindow();
